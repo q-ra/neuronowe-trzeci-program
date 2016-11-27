@@ -1,5 +1,6 @@
-let activatingFunction = (arr0, arr1) => {
+exports.activatingFunction = (arr0, arr1) => {
   let summed = 0
+  console.log(arr0.length)
   for(let indx of Array(arr0.length).keys()){
     summed += (arr0[indx] * arr1[indx])
   }
@@ -9,10 +10,10 @@ let activatingFunction = (arr0, arr1) => {
 
 exports.fixWeights = (inputArr, weights, exampleNumber) => {
   let new_weights = []
-  output = activatingFunction(inputArr, weights)
+  output = exports.activatingFunction(inputArr[exampleNumber], weights)
   for(let indx of weights.keys()){
-    new_weights[indx] = weights[indx] + 0.1 * //0.1 -- stała uczenia
-      (exampleNumber - output) * inputArr[indx]
+    new_weights[indx] = weights[indx] + 0.01 * //0.1 -- stała uczenia
+      (exampleNumber - output) * inputArr[exampleNumber][indx]
   }
   return new_weights
 }
@@ -25,5 +26,5 @@ let getRandomWeights = function(sizeOfArray){
 }
 
 exports.createWeights = () => {
-  return Array(10).fill(1).map((x) => getRandomWeights(85))
+  return getRandomWeights(85)
 }

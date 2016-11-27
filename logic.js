@@ -1,5 +1,6 @@
 const utils = require('./utils')
-const calculations = require('./calculations');
+const calculations = require('./calculations')
+const exec = require('child_process').exec
 
 exports.updateFile = () => {
   let E = $.map($('td', '.table-div'), (x) => $(x).hasClass('keyed') ? 1 : -1)
@@ -51,24 +52,40 @@ exports.getNumber = () => {
   }
   let tmp = $.map($('td', '.table-div'), (x) => $(x).hasClass('keyed') ? 1 : -1)
   let E = [1, ...tmp]
-  
-      foundNumbers.push(indx)
+  fs.writeFileSync('input_vals.json', JSON.stringify(E))
+  exec('python3 get_whole_example.py',(err, stdout, stderr)=>{
+    if(err){}
+      // console.log(stderr)
+    else {
+      // console.log(stdout)
+      let tmp = stdout
+      // console.log(global.superWeights)
+      x = eval(stdout)
+      // console.log(x)
+      // console.log(global.superWeights)
+      // console.log(calculations.activatingFunction(x, global.superWeights))
     }
-  }
+  })
 
-  $('.digit-buttons > button').removeClass('selected-digit')
 
-  for(let numb of foundNumbers){
-    $(`.digit-${numb}`).addClass('selected-digit')
-  }
-
-  if (!foundNumbers.length)
-    swal('Nie udało dopasować sie żadnej liczby')
-  else if(foundNumbers.length == 1)
-    swal('Cyfra to ' + foundNumbers[0])
-  else
-    swal('Możliwe cyfry to' + foundNumbers.join(' lub '))
-
+  //
+  //     foundNumbers.push(indx)
+  //   }
+  // }
+  //
+  // $('.digit-buttons > button').removeClass('selected-digit')
+  //
+  // for(let numb of foundNumbers){
+  //   $(`.digit-${numb}`).addClass('selected-digit')
+  // }
+  //
+  // if (!foundNumbers.length)
+  //   swal('Nie udało dopasować sie żadnej liczby')
+  // else if(foundNumbers.length == 1)
+  //   swal('Cyfra to ' + foundNumbers[0])
+  // else
+  //   swal('Możliwe cyfry to' + foundNumbers.join(' lub '))
+  //
 
 }
 
@@ -76,19 +93,22 @@ exports.getNumber = () => {
 //Nauka
 exports.learn = () => {
   let weights = calculations.createWeights()
-  let examples = getJSONWithExamples()
+
+
+  let examples = utils.getJSONWithExamples()
   for(let indx of examples.keys()){
     examples[indx] = [1, ...examples[indx]]
   }
-  for(let indx of Array(1000){
-    weights = getPerceptronLearn(examples, weights)
+  for(let indx of Array(200).keys()){
+    let exampleNumber =  Math.floor(Math.random() * examples.length)
+    weights = getPerceptronLearn(examples, weights, exampleNumber)
+    console.log(weights, indx)
   }
   global.superWeights = weights
   swal('Nauczyłem się !')
 }
 
-let singlePerceptronLearn = (examples, weights) => {
-  let exampleNumber =  Math.floor(Math.random() * examples.length)
-  let currentExample = examples[exampleNumber]
+let getPerceptronLearn = (examples, weights, exampleNumber) => {
+  let currentExample = examples
   return calculations.fixWeights(currentExample, weights, exampleNumber)
 }
