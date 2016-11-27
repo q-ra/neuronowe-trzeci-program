@@ -51,11 +51,7 @@ exports.getNumber = () => {
   }
   let tmp = $.map($('td', '.table-div'), (x) => $(x).hasClass('keyed') ? 1 : -1)
   let E = [1, ...tmp]
-  let foundNumbers = []
-  for(let indx of Array(10).keys()){
-    let weights = global.superWeights[indx]
-    let threshold = weights[0] * -1
-    if (calculations.activatingFunction(E, weights, threshold) == 1){
+  
       foundNumbers.push(indx)
     }
   }
@@ -79,41 +75,20 @@ exports.getNumber = () => {
 
 //Nauka
 exports.learn = () => {
-  let thresholds = Array(10).fill(1).map((x) => calculations.getThreshold())
-  let weights = calculations.createWeights(thresholds)
-  let pocketWeights = [...weights]
-  let longestLifes = Array(10).fill(0)
-  global.superWeights = []
-  for(let indx of Array(10).keys()){
-    global.superWeights.push(singlePerceptronLearn(indx, weights, thresholds, longestLifes, pocketWeights))
+  let weights = calculations.createWeights()
+  let examples = getJSONWithExamples()
+  for(let indx of examples.keys()){
+    examples[indx] = [1, ...examples[indx]]
   }
+  for(let indx of Array(1000){
+    weights = getPerceptronLearn(examples, weights)
+  }
+  global.superWeights = weights
   swal('Nauczyłem się !')
 }
 
-let singlePerceptronLearn = (perceptronIndx, weights, thresholds, longestLifes, pocketWeights ) => {
-  let examples = utils.getJSONWithExamples()[perceptronIndx] //tablica z wszystkimi przykladami danego perceptronu
-  let currentWeights = weights[perceptronIndx]
-  let currentThreshold = thresholds[perceptronIndx]
-  let longestLife = longestLifes[perceptronIndx]
-  let currentPocketWeights = pocketWeights[perceptronIndx]
-  let currentLifeLength = 0
-  for(let draw of Array(1000)){
-    let currentExample = examples[Math.floor(Math.random() * examples.length)]
-    let E = [1, ...currentExample['E']] // x0 == 1
-    let T = currentExample['T'] == true ? 1 : -1
-    let err = calculations.anyErrors(E, currentWeights, currentThreshold, T)
-    if (err){
-      currentLifeLength = 0
-      currentWeights = calculations.fixWeights(E, currentWeights, err)
-      currentThreshold = calculations.fixThreshold(currentThreshold, err)
-    } else {
-      currentLifeLength += 1
-      if (currentLifeLength > longestLife){
-        longestLife = currentLifeLength
-        currentPocketWeights = currentWeights
-      }
-    }
-  }
-  return currentPocketWeights
-
+let singlePerceptronLearn = (examples, weights) => {
+  let exampleNumber =  Math.floor(Math.random() * examples.length)
+  let currentExample = examples[exampleNumber]
+  return calculations.fixWeights(currentExample, weights, exampleNumber)
 }
