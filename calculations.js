@@ -34,7 +34,7 @@ exports.fixWeights = (inputArr, weights, exampleNumber, wantToLearn) => {
 let getRandomWeights = function(sizeOfArray){
   return Array.from({length: sizeOfArray}, () => {
     // let multiplicator = Math.random() >= 0.5 ? 1 : -1
-    return parseFloat(Math.random() / 1000) //* multiplicator
+    return parseFloat(Math.random() / 100) //* multiplicator
   })
 }
 
