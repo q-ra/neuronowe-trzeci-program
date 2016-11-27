@@ -1,6 +1,7 @@
 const utils = require('./utils')
 const calculations = require('./calculations')
 const exec = require('child_process').exec
+const fs = require('fs')
 
 exports.updateFile = () => {
   let E = $.map($('td', '.table-div'), (x) => $(x).hasClass('keyed') ? 1 : -1)
@@ -63,43 +64,37 @@ exports.getNumber = () => {
       full_example = eval(stdout)
       // console.log(x)
       // console.log(global.superWeights)
+      let foundNumbers = []
       for(let indx of Array(10).keys()){
         let x = calculations.activatingFunction(full_example, global.superWeights[indx])
         if(x > 0) {
-          console.log(indx)
+          foundNumbers.push(indx)
         }
       }
+      $('.digit-buttons > button').removeClass('selected-digit')
+
+      for(let numb of foundNumbers){
+        $(`.digit-${numb}`).addClass('selected-digit')
+      }
+
+      if (!foundNumbers.length)
+        swal('Nie udało dopasować sie żadnej liczby')
+      else if(foundNumbers.length == 1)
+        swal('Cyfra to ' + foundNumbers[0])
+      else
+        swal('Możliwe cyfry to ' + foundNumbers.join(' lub '))
+
 
     }
   })
-
-
-  //
-  //     foundNumbers.push(indx)
-  //   }
-  // }
-  //
-  // $('.digit-buttons > button').removeClass('selected-digit')
-  //
-  // for(let numb of foundNumbers){
-  //   $(`.digit-${numb}`).addClass('selected-digit')
-  // }
-  //
-  // if (!foundNumbers.length)
-  //   swal('Nie udało dopasować sie żadnej liczby')
-  // else if(foundNumbers.length == 1)
-  //   swal('Cyfra to ' + foundNumbers[0])
-  // else
-  //   swal('Możliwe cyfry to' + foundNumbers.join(' lub '))
-  //
 
 }
 
 
 //Nauka
 exports.learn = () => {
+  let statistics = Array(10).fill(1).map( (x) => [])
   let weights = calculations.createWeights()
-
   let examples = utils.getJSONWithExamples()
   for(let indx of examples.keys()){
     examples[indx] = [1, ...examples[indx]]
@@ -112,17 +107,20 @@ exports.learn = () => {
       tmp = getPerceptronLearn(examples, weights[wantToLearn], exampleNumber, wantToLearn)
 
       err = tmp[1]
-      console.log(err)
+
+      if(indx % 100){
+        statistics[wantToLearn].push(err)
+      }
       if(err > 0.0001){
         weights[wantToLearn] = tmp[0]
       }
-      // debugger
 
     }
     global.superWeights = weights
     swal('Nauczyłem się !')
+    fs.writeFileSync('statistics.json', JSON.stringify(statistics))
   }
-  }
+}
 
 let getPerceptronLearn = (examples, weights, exampleNumber, wantToLearn) => {
   return calculations.fixWeights(examples, weights, exampleNumber, wantToLearn)
