@@ -7,7 +7,7 @@ exports.updateFile = () => {
   if(P == null || P == undefined || P == ''){
     swal('Jaka to cyfra?')
   } else {
-    utils.appendToJSON(E, P)
+    utils.appendToJSON(E, parseInt(P))
   }
 }
 
@@ -15,7 +15,7 @@ global.currentlyLoadedExample = null
 
 exports.nextExample = () => {
   let examples = utils.getJSONWithExamples()
-  let examplesLength = examples[0].length
+  let examplesLength = examples.length
   if (global.currentlyLoadedExample === null ||
       global.currentlyLoadedExample == examplesLength - 1 ||
       global.currentlyLoadedExample < 0) {
@@ -23,14 +23,8 @@ exports.nextExample = () => {
   } else {
     global.currentlyLoadedExample += 1
   }
-  let currentExample = examples[0][global.currentlyLoadedExample]['E']
-  let correctExampleId = null
-  for(let indx of Array(10).keys()){
-    if(examples[indx][global.currentlyLoadedExample]['T'] == true){
-      correctExampleId = indx
-      break
-    }
-  }
+  let currentExample = examples[global.currentlyLoadedExample]
+
   $('td').removeClass('keyed').addClass('normal-td')
   $('button','.digit-buttons').removeClass('selected-digit')
   $('td').each(function(indx){
@@ -38,18 +32,19 @@ exports.nextExample = () => {
         $(this).addClass('keyed')
       }
   })
-  $(`.digit-${correctExampleId}`).addClass('selected-digit')
+  $(`.digit-${global.currentlyLoadedExample}`).addClass('selected-digit')
 }
 
 exports.deleteExample = () => {
   let examples = utils.getJSONWithExamples()
-  for(let indx of Array(10).keys()){
-    examples[indx].splice(global.currentlyLoadedExample, 1)
-  }
+  examples.splice(global.currentlyLoadedExample, 1)
+  examples.push([])
   global.currentlyLoadedExample -= 1
   fs.writeFileSync('examples.json', JSON.stringify(examples))
   exports.nextExample()
 }
+
+
 exports.getNumber = () => {
   if(global.superWeights == undefined){
     swal('Nie nauczyłem się jeszcze')
