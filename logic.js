@@ -58,12 +58,18 @@ exports.getNumber = () => {
       // console.log(stderr)
     else {
       // console.log(stdout)
-      let tmp = stdout
+      let full_example = stdout
       // console.log(global.superWeights)
-      x = eval(stdout)
+      full_example = eval(stdout)
       // console.log(x)
       // console.log(global.superWeights)
-      console.log(calculations.activatingFunction(x, global.superWeights))
+      for(let indx of Array(10).keys()){
+        let x = calculations.activatingFunction(full_example, global.superWeights[indx])
+        if(x > 0) {
+          console.log(indx)
+        }
+      }
+
     }
   })
 
@@ -98,21 +104,26 @@ exports.learn = () => {
   for(let indx of examples.keys()){
     examples[indx] = [1, ...examples[indx]]
   }
-  for(let indx of Array(50000).keys()){
-    let exampleNumber =  Math.floor(Math.random() * examples.length)
-    tmp = getPerceptronLearn(examples, weights, exampleNumber)
 
-    err = tmp[1]
-    if(err > 0.1){
-      weights = tmp[0]
+  for(let wantToLearn of Array(10).keys()){
+    for(let indx of Array(10000).keys()){
+      let exampleNumber =  Math.floor(Math.random() * examples.length)
+      // let exampleNumber = 0
+      tmp = getPerceptronLearn(examples, weights[wantToLearn], exampleNumber, wantToLearn)
+
+      err = tmp[1]
+      console.log(err)
+      // if(err > 0.0001){
+        weights[wantToLearn] = tmp[0]
+      // }
+      // debugger
+
     }
-
+    global.superWeights = weights
+    swal('Nauczyłem się !')
   }
-  global.superWeights = weights
-  swal('Nauczyłem się !')
-}
+  }
 
-let getPerceptronLearn = (examples, weights, exampleNumber) => {
-  let currentExample = examples
-  return calculations.fixWeights(currentExample, weights, exampleNumber)
+let getPerceptronLearn = (examples, weights, exampleNumber, wantToLearn) => {
+  return calculations.fixWeights(examples, weights, exampleNumber, wantToLearn)
 }
