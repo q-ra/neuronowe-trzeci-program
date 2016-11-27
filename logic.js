@@ -106,16 +106,16 @@ exports.learn = () => {
   }
 
   for(let wantToLearn of Array(10).keys()){
-    for(let indx of Array(10000).keys()){
+    for(let indx of Array(20000).keys()){
       let exampleNumber =  Math.floor(Math.random() * examples.length)
       // let exampleNumber = 0
       tmp = getPerceptronLearn(examples, weights[wantToLearn], exampleNumber, wantToLearn)
 
       err = tmp[1]
       console.log(err)
-      // if(err > 0.0001){
+      if(err > 0.0001){
         weights[wantToLearn] = tmp[0]
-      // }
+      }
       // debugger
 
     }

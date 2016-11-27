@@ -10,11 +10,11 @@ json_arr = json.load(open('examples.json'))
 for indx, example in enumerate(json_arr):
     if len(example) == 64:
         new_arr = example[:]
-        new_arr.extend([amplitude(ffted) for ffted in numpy.fft.fft(new_arr)])
+        new_arr.extend([amplitude(ffted) for ffted in numpy.fft.fft(new_arr, norm='ortho')])
         json_arr[indx] = new_arr
     else:
         new_arr = example[:64]
-        new_arr.extend([amplitude(ffted) for ffted in numpy.fft.fft(new_arr)])
+        new_arr.extend([amplitude(ffted) for ffted in numpy.fft.fft(new_arr, norm='ortho')])
         json_arr[indx] = new_arr
 #
 #

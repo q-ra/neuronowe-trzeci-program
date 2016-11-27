@@ -2,7 +2,7 @@ exports.activatingFunction = (arr0, arr1) => {
   let summed = 0
   // console.log(arr0.length)
   // for(let indx of Array(arr0.length).keys()){
-  for(let indx of Array(65).keys()){
+  for(let indx of Array(129).keys()){
     summed += (arr0[indx] * arr1[indx])
   }
   return summed
@@ -10,7 +10,7 @@ exports.activatingFunction = (arr0, arr1) => {
 
 errorVal = (output, exampleNumber) => {
   let summed = 0
-  for(let indx of Array(65).keys()){
+  for(let indx of Array(129).keys()){
     summed += ((output - exampleNumber) ** 2)
   }
   return summed
@@ -23,7 +23,7 @@ exports.fixWeights = (inputArr, weights, exampleNumber, wantToLearn) => {
   output = exports.activatingFunction(inputArr[exampleNumber], weights)
   // console.log(inputArr, weights, exampleNumber)
   let err = errorVal(output, c)
-  for(let indx of Array(65).keys()){
+  for(let indx of Array(129).keys()){
     new_weights[indx] = weights[indx] + 0.001 *
       (c - output) * inputArr[exampleNumber][indx]
       // debugger
@@ -39,5 +39,5 @@ let getRandomWeights = function(sizeOfArray){
 }
 
 exports.createWeights = () => {
-  return Array(10).fill(1).map( (x) => getRandomWeights(65))
+  return Array(10).fill(1).map( (x) => getRandomWeights(129))
 }
