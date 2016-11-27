@@ -6,7 +6,7 @@ def amplitude(cmplx_val):
 example = json.load(open('input_vals.json'))
 
 
-if len(example) == 43:
+if len(example) == 65:
     new_arr = example[:]
     new_arr.extend([amplitude(ffted) for ffted in numpy.fft.fft(example[1:])])
 # print numpy.fft.fft([1, 1, 1, 0])

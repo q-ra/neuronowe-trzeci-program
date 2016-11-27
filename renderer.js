@@ -4,9 +4,9 @@ logic = require('./logic')
 var createButtons = () => {
   let indx = 0
   $('.table-div').append('<table />')
-  for (tr_ind of Array(7).keys()){
+  for (tr_ind of Array(8).keys()){
     _tr = $('<tr/>').appendTo('table')
-    for (td_ind of Array(6).keys()) {
+    for (td_ind of Array(8).keys()) {
       _tr.append(`<td id="td-${indx}" class="normal-td"> </td>`)
       indx += 1
     }
